@@ -1,18 +1,40 @@
 {
-    "name": "DAd",
-    "version": "1.0.0",
-    "scripts": {
-        "client": "cd client && yarn start",
-        "server": "nodemon server.js",
-        "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
-    },
-    "dependencies": {
-        "body-parser": "^1.18.3",
-        "cors": "^2.8.5",
-        "express": "^4.16.4",
-        "nodemon": "^2.0.19"
-    },
-    "devDependencies": {
-        "concurrently": "^4.0.1"
-    }
+  "name": "dad",
+  "version": "1.0.0",
+  "scripts": {
+    "client": "cd client && yarn start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@openzeppelin/contracts": "^4.7.3",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "ethereumjs-tx": "^2.1.2",
+    "ethers": "^5.7.1",
+    "express": "^4.16.4",
+    "nodemon": "^2.0.19",
+    "web3": "^1.8.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "concurrently": "^4.0.1",
+    "hardhat": "^2.11.2"
+  },
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikekks/D_Ad_API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mikekks/D_Ad_API/issues"
+  },
+  "homepage": "https://github.com/mikekks/D_Ad_API#readme",
+  "description": ""
 }
