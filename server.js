@@ -4,20 +4,131 @@ const bodyParser = require('body-parser');
 const port = process.env.PORT || 5000;
 const cors = require('cors')
 const FTcontract = require('./CatToken.json');
-const NFTcontract = require('./NFCtoken.json')
+const NFTcontract = require('./NFCtoken.json');
+const FTmint = require('./FTmint.json');
+const NFTmint = require('./NFTmint.json');
 const Web3 = require('web3');
 const { utils } = require('web3');
 const Tx = require('ethereumjs-tx').Transaction;
 
+
 require('dotenv').config();
-const { API_URL, PRIVATE_KEY, ADDRESS_ACCOUNT, ADDRESS_CONTRACT_FT, ADDRESS_CONTRACT_NFT  } = process.env;
+const { RINKEBY_URL, MUMBAI_URL, PRIVATE_KEY, ADDRESS_ACCOUNT, ADDRESS_CONTRACT_FT, ADDRESS_CONTRACT_NFT  } = process.env;
 const FTabi = FTcontract.abi;
 const NFTabi = NFTcontract.abi;
+
+const FTmintabi = FTmint.abi;
+const FTmintbyte = FTmint.bytecode;
+const NFTmintabi = NFTmint.abi;
+const NFTmintbyte = NFTmint.bytecode;
 
 app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( {extended: true}));
 app.use(express.json());
+
+app.post('/api/FTmint/', async (req, res) => {
+
+    //req.header
+    const argv = {
+        name: req.body.name,
+        symbol: req.body.symbol,
+        supply: req.body.supply,
+        chain: req.body.chain,
+        account: req.body.account
+    }
+    console.log(argv);
+
+    let url = "";
+    if (argv.chain === "rinkeby") {
+        url = RINKEBY_URL
+    }
+    else if (argv.chain === "mumbai") {
+        url = MUMBAI_URL
+    }
+
+    const web3 = new Web3(new Web3.providers.HttpProvider(url));
+
+    const contract = new web3.eth.Contract(FTmintabi
+        , '', {
+        from: ADDRESS_ACCOUNT,
+        gasPrice: web3.utils.toHex(10e9),
+        data: FTmintbyte
+        }
+    )
+
+    const incrementerTx = contract.deploy({
+        data: FTmintbyte,
+        arguments: [argv.name, argv.symbol, argv.supply, argv.account]
+    })
+
+    const createTransaction = await web3.eth.accounts.signTransaction(
+    {
+      data: incrementerTx.encodeABI(),
+      gas: await incrementerTx.estimateGas(),
+    },
+    PRIVATE_KEY
+  );
+
+  const createReceipt = await web3.eth.sendSignedTransaction(createTransaction.rawTransaction);
+  console.log(`Contract deployed at address: ${createReceipt.contractAddress}`);
+    res.send(createReceipt.contractAddress);
+
+});
+
+
+
+
+app.post('/api/NFTmint/', async (req, res) => {
+
+    //req.header
+    const argv = {
+        name: req.body.name,
+        symbol: req.body.symbol,
+        tokenuri : req.body.tokenuri,
+        chain: req.body.chain,
+        account: req.body.account
+    }
+    console.log(argv);
+
+    let url = "";
+    if (argv.chain === "rinkeby") {
+        url = RINKEBY_URL
+    }
+    else if (argv.chain === "mumbai") {
+        url = MUMBAI_URL
+    }
+
+    const web3 = new Web3(new Web3.providers.HttpProvider(url));
+
+    const contract = new web3.eth.Contract(NFTmintabi
+        , '', {
+        from: ADDRESS_ACCOUNT,
+        gasPrice: web3.utils.toHex(10e9),
+        data: NFTmintbyte
+        }
+    )
+
+    const incrementerTx = contract.deploy({
+        data: NFTmintbyte,
+        arguments: [argv.name, argv.symbol, argv.tokenuri, argv.account]
+    })
+
+    const createTransaction = await web3.eth.accounts.signTransaction(
+    {
+      data: incrementerTx.encodeABI(),
+      gas: await incrementerTx.estimateGas(),
+    },
+    PRIVATE_KEY
+  );
+
+  const createReceipt = await web3.eth.sendSignedTransaction(createTransaction.rawTransaction);
+  console.log(`Contract deployed at address: ${createReceipt.contractAddress}`);
+    res.send(createReceipt.contractAddress);
+
+});
+
+
 
 app.post('/api/FT/', async (req, res) => {
 
@@ -127,7 +238,9 @@ app.post('/api/NFT/', async (req, res) => {
         }
     })
         // ** use groth16 **
-    });
+});
+
+
 
 
 app.listen(port, () => console.log(`Listen ${port}`));

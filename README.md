@@ -1,6 +1,14 @@
 # Calling "mint" function in smart contract without metamask
 
-This project can call smart contracts without metamask. Also, by implementing it as an API, it can be called by games like Roblox or various programs.
+This project can call smart contracts without metamask. One URL generates an ERC20 token, and the other URL generates an ERC721 token (NFT).
+
+Also, by implementing it as an API, it can be called by games like Roblox or various programs.
+
+
+# D-Ad scalability
+
+This is a project carried out for the scalability of the previously produced advertising platform D-Ad.
+Rather than limiting D-Ad within the website, we want to increase scalability by connecting it to APIs in other dapps. Therefore, we want to maximize the advertising effect.
 
 
 # Sample Hardhat Project
