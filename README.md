@@ -10,7 +10,7 @@
  
 ***
 ## Inspiration
-This project is the cornerstone of a cross-platform that can exchange, share, and create blockchain-based digital goods in Metaverse. We think that this can greatly activate the bridge role that evmos plays in cosmos. Facilitating many digital goods transactions through p2e in cross-platform metaverse, I have no doubt that evmos can contribute to the expansion of cosmos layer0 in the future. Evmos will be abbreviated as everything + cosmos in the future.
+We see a lot of news these days highlighting blockchain and metaverse. In this context, we know that each blockchain network either competes or cooperates to scale each other up. We focus on leveraging an existing platform as one of the ways to expand the existing chain network. We want to experiment with the scalability of EVMOS through Roblox, one of the giant metaverses.
 
 ***
 ## What it does
