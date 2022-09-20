@@ -75,6 +75,7 @@ app.post('/api/FTmint/', async (req, res) => {
     PRIVATE_KEY
   );
 
+  
   const createReceipt = await web3.eth.sendSignedTransaction(createTransaction.rawTransaction);
   console.log(`Contract deployed at address: ${createReceipt.contractAddress}`);
   console.log(`Transation hash: ${createReceipt.transactionHash}`)
