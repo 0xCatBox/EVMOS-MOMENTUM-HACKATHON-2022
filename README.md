@@ -58,11 +58,13 @@ We confirmed that users can minting various tokens on the Metaverse through the 
 ***
 ## How to run
 
-### 0. Download Roblox place
+### 0. Things to prepare in advance
 
 If you have not downloaded the Roblox map, first download the Roblox map from the link below.
 
  - https://www.roblox.com/games/10957234853/0xCatbox-Metaverse-Minting-Structure
+ 
+Change the name `.env.example` to `.env` and write the necessary information inside to run the program.
 
 ### 1. Server run
 
