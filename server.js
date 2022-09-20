@@ -10,10 +10,12 @@ const NFTmint = require('./contracts_JSON/NFTmint.json');
 const Web3 = require('web3');
 const { utils } = require('web3');
 const Tx = require('ethereumjs-tx').Transaction;
+const pinataSDK = require('@pinata/sdk');
+
 
 
 require('dotenv').config();
-const { RINKEBY_URL, MUMBAI_URL, PRIVATE_KEY, ADDRESS_ACCOUNT, ADDRESS_CONTRACT_FT, ADDRESS_CONTRACT_NFT  } = process.env;
+const { RINKEBY_URL, MUMBAI_URL, EVMOS_URL, PRIVATE_KEY, ADDRESS_ACCOUNT, ADDRESS_CONTRACT_FT, ADDRESS_CONTRACT_NFT, PINATA_KEY, PINATA_SECRETKEY } = process.env;
 const FTabi = FTcontract.abi;
 const NFTabi = NFTcontract.abi;
 
@@ -21,6 +23,9 @@ const FTmintabi = FTmint.abi;
 const FTmintbyte = FTmint.bytecode;
 const NFTmintabi = NFTmint.abi;
 const NFTmintbyte = NFTmint.bytecode;
+
+const pinata = pinataSDK(PINATA_KEY, PINATA_SECRETKEY);
+
 
 app.use(cors())
 app.use(bodyParser.json());
@@ -34,21 +39,21 @@ app.post('/api/FTmint/', async (req, res) => {
         name: req.body.name,
         symbol: req.body.symbol,
         supply: req.body.supply,
-        chain: req.body.chain,
+        //chain: req.body.chain,
         account: req.body.account
     }
     console.log(argv);
 
-    let url = "";
-    if (argv.chain === "rinkeby") {
-        url = RINKEBY_URL
-    }
-    else if (argv.chain === "mumbai") {
-        url = MUMBAI_URL
-    }
-
+    let url = EVMOS_URL;
+    
+    // if (argv.chain === "rinkeby") {
+    //     url = RINKEBY_URL
+    // }
+    // else if (argv.chain === "mumbai") {
+    //     url = MUMBAI_URL
+    // }
     const web3 = new Web3(new Web3.providers.HttpProvider(url));
-
+    
     const contract = new web3.eth.Contract(FTmintabi
         , '', {
         from: ADDRESS_ACCOUNT,
@@ -72,7 +77,9 @@ app.post('/api/FTmint/', async (req, res) => {
 
   const createReceipt = await web3.eth.sendSignedTransaction(createTransaction.rawTransaction);
   console.log(`Contract deployed at address: ${createReceipt.contractAddress}`);
-    res.send(createReceipt.contractAddress);
+  console.log(`Transation hash: ${createReceipt.transactionHash}`)
+  const result = [createReceipt.contractAddress,createReceipt.transactionHash]
+    res.send(result);
 
 });
 
@@ -85,19 +92,49 @@ app.post('/api/NFTmint/', async (req, res) => {
     const argv = {
         name: req.body.name,
         symbol: req.body.symbol,
-        tokenuri : req.body.tokenuri,
-        chain: req.body.chain,
+        imageurl : req.body.imageurl,
         account: req.body.account
     }
     console.log(argv);
+    
+    let url = EVMOS_URL;
+    
+    let robloxImageJosnData = `https://thumbnails.roblox.com/v1/assets?assetIds=${argv.imageurl}&size=512x512&format=Png&isCircular=false`;
+    const response = await fetch(robloxImageJosnData, 
+        {
+            method: "GET",
+            header: {
+                "Accept": "application/json"
+            },
+    })
+    const responsebody = await response.json()
 
-    let url = "";
-    if (argv.chain === "rinkeby") {
-        url = RINKEBY_URL
-    }
-    else if (argv.chain === "mumbai") {
-        url = MUMBAI_URL
-    }
+    robloxImageUrl = responsebody.data[0].imageUrl
+
+    const MyCustomName = "Catbox"
+    const body = {
+        message: robloxImageUrl,
+    };
+    const options = {
+        pinataMetadata: {
+            name: MyCustomName,
+            keyvalues: {
+                image: robloxImageUrl
+            }
+        },
+        pinataOptions: {
+            cidVersion: 0
+        }
+    };
+    let ipfsresult = "";
+    await pinata.pinJSONToIPFS(body, options).then((result) => {
+        //handle results here
+        ipfsresult = result
+        console.log(result);
+    }).catch((err) => {
+        //handle error here
+        console.log(err);
+    });
 
     const web3 = new Web3(new Web3.providers.HttpProvider(url));
 
@@ -111,7 +148,7 @@ app.post('/api/NFTmint/', async (req, res) => {
 
     const incrementerTx = contract.deploy({
         data: NFTmintbyte,
-        arguments: [argv.name, argv.symbol, argv.tokenuri, argv.account]
+        arguments: [argv.name, argv.symbol, argv.imageurl, argv.account]
     })
 
     const createTransaction = await web3.eth.accounts.signTransaction(
@@ -124,8 +161,9 @@ app.post('/api/NFTmint/', async (req, res) => {
 
   const createReceipt = await web3.eth.sendSignedTransaction(createTransaction.rawTransaction);
   console.log(`Contract deployed at address: ${createReceipt.contractAddress}`);
-    res.send(createReceipt.contractAddress);
-
+  console.log(`Transation hash: ${createReceipt.transactionHash}`)
+  const result = [createReceipt.contractAddress,createReceipt.transactionHash,ipfsresult]
+    res.send(result);
 });
 
 
