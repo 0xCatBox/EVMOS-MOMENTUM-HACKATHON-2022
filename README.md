@@ -66,7 +66,7 @@ If you have not downloaded the Roblox map, first download the Roblox map from th
  
 Or you can download our `.rblx` world file from our repository which name is `0XCatBox Metaverse Minting.rbxl`.
  
-Change the name `.env.example` to `.env` and write the necessary information inside to run the program.
+And, change the name `.env.example` to `.env` and write the necessary information inside to run the program.
 
 ### 1. Server run
 
