@@ -64,6 +64,8 @@ If you have not downloaded the Roblox map, first download the Roblox map from th
 
  - https://www.roblox.com/games/10957234853/0xCatbox-Metaverse-Minting-Structure
  
+Or you can download our `.rblx` world file from our repository which name is `0XCatBox Metaverse Minting.rbxl`.
+ 
 Change the name `.env.example` to `.env` and write the necessary information inside to run the program.
 
 ### 1. Server run
